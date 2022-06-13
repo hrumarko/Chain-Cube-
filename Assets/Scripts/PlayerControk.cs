@@ -11,7 +11,7 @@ public class PlayerControk : MonoBehaviour, ICube
     public GameObject leftBound;
     public float speed = 10f;
     public float speedForce = 50f;
-    bool endShoot;
+    
    
     GameObject cubePrefab;
     
@@ -21,10 +21,11 @@ public class PlayerControk : MonoBehaviour, ICube
     {
         
         
-        SpawnCubes();
+        cubePrefab = Instantiate(cube, new Vector3(4, 0.91f, 0), Quaternion.identity);
+        cubePrefab.transform.parent = player.transform;
         float maxZ = rightBound.transform.position.z;
         float minZ = leftBound.transform.position.z;
-        rb = cubePrefab.GetComponent<Rigidbody>();
+        
         
         
     }
@@ -32,9 +33,10 @@ public class PlayerControk : MonoBehaviour, ICube
     // Update is called once per frame
     void Update()
     {   
-        
+        if(cubePrefab.transform.parent == player.transform){
         Move();
         Shoot();
+        }
         
         
         
@@ -53,7 +55,7 @@ public class PlayerControk : MonoBehaviour, ICube
               
         Vector3 pos = new Vector3(x, y, z * speed);
         
-        if(Input.GetMouseButton(0) ){
+        if(Input.GetMouseButton(0)){
             
             
             if(cubePrefab.transform.position.z <= maxZ & cubePrefab.transform.position.z >= minZ){
@@ -74,19 +76,20 @@ public class PlayerControk : MonoBehaviour, ICube
         
     }
     public void Shoot(){
+        rb = cubePrefab.GetComponent<Rigidbody>();
        if(Input.GetMouseButtonUp(0)){
         Vector3 add = new Vector3(-10f, cubePrefab.transform.position.y, cubePrefab.transform.position.z);
         rb.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
         cubePrefab.transform.parent = cubeOutside.transform;
         
-        
+        Invoke("SpawnCubes", 1.0f);
     }
     
     
     }
     public void SpawnCubes()
-        {
-            cubePrefab = Instantiate(cube, new Vector3(4, 0.91f, 0), Quaternion.identity);
-            cubePrefab.transform.parent = player.transform;
-        }
+    {
+        cubePrefab = Instantiate(cube, new Vector3(4, 0.91f, 0), Quaternion.identity);
+        cubePrefab.transform.parent = player.transform;
+    }
 }
