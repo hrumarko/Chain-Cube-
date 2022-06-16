@@ -2,48 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControk : MonoBehaviour, ICube
+public class Game : MonoBehaviour
 {
-    public GameObject cube;
-    public GameObject cubeOutside;
-    public GameObject player;
+    public GameObject player; 
+    GameObject cubePrefab;
     public GameObject rightBound;
     public GameObject leftBound;
-    public float speed = 10f;
-    public float speedForce = 50f;
-    
-   
-    GameObject cubePrefab;
-    
-    Rigidbody rb;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-        
-        cubePrefab = Instantiate(cube, new Vector3(4, 0.91f, 0), Quaternion.identity);
-        cubePrefab.transform.parent = player.transform;
-        float maxZ = rightBound.transform.position.z;
-        float minZ = leftBound.transform.position.z;
-        
-        
-        
+    public float speed = 5f;
+    public float speedForce = 22f;
+    public GameObject cubeOutside;
+    Cube cubePref;
+    private void Start() {
+        cubePref = GetComponent<Cube>();
+        Spawn();
     }
-
-    // Update is called once per frame
-    void Update()
-    {   
-        if(cubePrefab.transform.parent == player.transform){
+    private void Update() {
         Move();
         Shoot();
-        }
-        
-        
-        
-
     }
+
     public void Move(){
-       
         Ray worldPosition = Camera.main.ScreenPointToRay(Input.mousePosition);
         float maxZ = rightBound.transform.position.z;
         float minZ = leftBound.transform.position.z;
@@ -55,7 +33,7 @@ public class PlayerControk : MonoBehaviour, ICube
               
         Vector3 pos = new Vector3(x, y, z * speed);
         
-        if(Input.GetMouseButton(0)){
+        if(Input.GetMouseButton(0)&& cubePrefab.transform.parent == player.transform){
             
             
             if(cubePrefab.transform.position.z <= maxZ & cubePrefab.transform.position.z >= minZ){
@@ -72,24 +50,38 @@ public class PlayerControk : MonoBehaviour, ICube
                 cubePrefab.transform.position = positionZ;
             }
         }
-        
-        
     }
+
     public void Shoot(){
-        rb = cubePrefab.GetComponent<Rigidbody>();
-       if(Input.GetMouseButtonUp(0)){
+        Rigidbody rb = cubePrefab.GetComponent<Rigidbody>();
+       if(Input.GetMouseButtonUp(0)&& cubePrefab.transform.parent == player.transform){
         Vector3 add = new Vector3(-10f, cubePrefab.transform.position.y, cubePrefab.transform.position.z);
         rb.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
         cubePrefab.transform.parent = cubeOutside.transform;
         
-        Invoke("SpawnCubes", 1.0f);
+        Invoke("Spawn", 1.0f);
     }
-    
-    
     }
-    public void SpawnCubes()
-    {
-        cubePrefab = Instantiate(cube, new Vector3(4, 0.91f, 0), Quaternion.identity);
+    public void Spawn(){
+        int rand = Random.Range(0, 4);
+        cubePref.SetColor(rand);
+        cubePref.SetNumber(cubePref.nums[rand]);
+        cubePrefab = Instantiate(cubePref.cubePrefab, new Vector3(4, 0.91f, 0), Quaternion.identity);
         cubePrefab.transform.parent = player.transform;
     }
+    private void OnCollisionEnter(Collision other) {
+        if(other.gameObject.tag == "Player" && TwoObj(2, 2) == true){
+            Debug.Log("aaaaaaaaaaaaaaaa");
+        }
+    }
+
+    public bool TwoObj(int a, int b){
+        a = cubePref.Num;
+        b = cubePref.Num;
+        if(a == b)  return true;
+        else 
+        {return false;}
+    }
+
+    
 }
