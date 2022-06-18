@@ -12,7 +12,9 @@ public class Game : MonoBehaviour
     public float speedForce = 22f;
     GameObject go;
     
-    [SerializeField] private Cubeq cub;
+    
+    
+    [SerializeField] private Cube cub;
     
     void Start(){
         Spawn();
@@ -35,7 +37,7 @@ public class Game : MonoBehaviour
               
         Vector3 pos = new Vector3(x, y, z * speed);
         
-        if(Input.GetMouseButton(0)){
+        if(Input.GetMouseButton(0) && cub.isMain){
             
             
             if(go.transform.position.z <= maxZ & go.transform.position.z >= minZ){
@@ -56,21 +58,25 @@ public class Game : MonoBehaviour
 
     void Shoot(){
         if(go != null)
-        {
+        {   
+            
             Rigidbody rb = go.GetComponent<Rigidbody>();
-            if(Input.GetMouseButtonUp(0)){
-        
+            if(Input.GetMouseButtonUp(0)&& cub.isMain == true){
+                
                 Vector3 add = new Vector3(-10f, go.transform.position.y, go.transform.position.z);
                 rb.AddForce(Vector3.left * speedForce, ForceMode.Impulse);
+                
+                
                 Invoke("Spawn", 1.0f);
             }       
         }
        
+
     }
     
     void Spawn(){
         
-        
+        cub.isMain = true;
         int rand = Random.Range(0, 10);
         cub.SetNumber(rand);
         go = Instantiate(cubePrefab, new Vector3(4f, 0.91f, 0f), Quaternion.identity);
