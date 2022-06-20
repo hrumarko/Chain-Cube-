@@ -77,13 +77,11 @@ public class Game : MonoBehaviour
     void Spawn(){
         
         cub.isMain = true;
-        int rand = Random.Range(0, 10);
+        int rand = Random.Range(0, cub.numbers.Length);
+        cub.SetColor(rand);
+        rand = cub.numbers[rand];
         cub.SetNumber(rand);
         go = Instantiate(cubePrefab, new Vector3(4f, 0.91f, 0f), Quaternion.identity);
-        
-        
-        
-            
     }
     
 }
