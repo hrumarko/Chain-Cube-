@@ -15,12 +15,7 @@ public class Cube : MonoBehaviour
     
     
     
-    void Start(){
-        // materials = new Material[12];
-        Debug.Log(materials.Length);
-        
-        
-    }
+   
     
     
    

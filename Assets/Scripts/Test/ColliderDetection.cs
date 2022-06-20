@@ -10,9 +10,11 @@ public class ColliderDetection : MonoBehaviour
     GameObject cube;
     bool destroy;
     public float force;
+    ChangeColor changeColor;
     
     private void Awake() {
-        cuba = GetComponent<Cube>();    
+        cuba = GetComponent<Cube>();  
+        changeColor = GetComponent<ChangeColor>();  
     }
     
 
@@ -25,9 +27,11 @@ public class ColliderDetection : MonoBehaviour
         if(otherCube != null){
             if(cuba.Number == otherCube.Number){
                 int num = cuba.Number + otherCube.Number;
+                
                 Vector3 pos = otherCube.gameObject.transform.position;                
                 Destroy(collision.gameObject);
                 cuba.SetNumber(num);
+                changeColor.CheckColor(num);
                 Rigidbody rb = cuba.GetComponent<Rigidbody>();
                 rb.AddForce(Vector3.up* force, ForceMode.Impulse);
                 
